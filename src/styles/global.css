@@ -137,3 +137,47 @@ h3{font-size:15px;font-weight:500}
  .ways-section .card{min-height:0}
  .card-arrow{bottom:26px}
 }
+
+
+/* Quiet pages: let typography and open space carry the story */
+.about-opening{display:grid;grid-template-columns:.55fr 1.45fr;gap:7vw;padding:35px 0 125px}
+.about-side-note{font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.4;color:var(--rust);padding-top:8px}
+.about-opening .prose{max-width:690px}
+.about-opening .prose p{font-size:17px;line-height:1.95}
+.practice-list{border-top:1px solid var(--line);margin-bottom:120px}
+.practice-list article{display:grid;grid-template-columns:90px 1fr;gap:25px;padding:36px 0;border-bottom:1px solid var(--line);align-items:start}
+.practice-list .number{font-family:var(--serif);font-size:19px;color:var(--rust)}
+.practice-list h2{font-size:clamp(28px,3.4vw,43px);margin:0 0 10px}
+.practice-list p{color:var(--muted);max-width:600px;font-size:14px;margin:0}
+.practice-note{background:var(--paper2);padding:clamp(65px,9vw,115px) 0}
+.practice-note-grid{display:grid;grid-template-columns:.65fr 1.35fr;gap:7vw}
+.practice-note .prose{max-width:690px}
+.practice-note .prose p{font-size:15px}
+.workshop-intro{display:grid;grid-template-columns:.7fr 1.3fr;gap:7vw;padding:25px 0 120px;align-items:start}
+.workshop-quiet-mark{font-family:var(--serif);font-size:clamp(42px,6vw,75px);line-height:1.08;letter-spacing:-.04em;color:#b6aa98}
+.workshop-intro .prose{max-width:650px}
+.workshop-intro .prose p{font-size:16px}
+.workshop-topics{display:grid;grid-template-columns:repeat(3,1fr);margin-top:30px;border-top:1px solid var(--line)}
+.workshop-topics span{padding:19px 12px 19px 0;border-bottom:1px solid var(--line);font-family:var(--serif);font-size:19px}
+.writing-list{border-top:1px solid var(--line)}
+.writing-list article{display:grid;grid-template-columns:125px 1fr 20px;gap:20px;align-items:start;padding:30px 0;border-bottom:1px solid var(--line)}
+.writing-list .when{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);padding-top:9px}
+.writing-list h2{font-size:clamp(23px,3vw,34px);margin:0 0 8px}
+.writing-list p{font-size:13px;color:var(--muted);margin:0}
+.writing-arrow{color:var(--rust);padding-top:6px}
+.writing-footnote{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:14px;margin-top:30px}
+@media(max-width:760px){
+ .about-opening,.practice-note-grid,.workshop-intro{grid-template-columns:1fr;gap:25px}
+ .about-opening{padding:20px 0 75px}
+ .about-opening .prose p{font-size:15px}
+ .practice-list{margin-bottom:75px}
+ .practice-list article{grid-template-columns:36px 1fr;gap:12px;padding:28px 0}
+ .practice-list h2{font-size:29px}
+ .workshop-intro{padding:10px 0 75px}
+ .workshop-quiet-mark{font-size:54px}
+ .workshop-topics{grid-template-columns:1fr 1fr}
+ .workshop-topics span{font-size:17px}
+ .writing-list article{grid-template-columns:1fr 18px;gap:8px}
+ .writing-list .when{grid-column:1/-1;padding:0}
+ .writing-list h2{font-size:25px}
+}
