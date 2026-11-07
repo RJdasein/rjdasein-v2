@@ -181,3 +181,29 @@ h3{font-size:15px;font-weight:500}
  .writing-list .when{grid-column:1/-1;padding:0}
  .writing-list h2{font-size:25px}
 }
+
+
+/* Theme controls and restrained night palette */
+:root{color-scheme:light}
+:root[data-theme="dark"]{
+ color-scheme:dark;
+ --paper:#20211f;--paper2:#292a26;--ink:#e9e5dc;--muted:#aaa69c;
+ --line:#41413a;--rust:#c18b70;
+}
+:root[data-theme="dark"] .lede,
+:root[data-theme="dark"] .prose{color:#c2beb4}
+:root[data-theme="dark"] .intro-band{background:var(--paper2)}
+:root[data-theme="dark"] .closing-note{background:#171816}
+:root[data-theme="dark"] .card:hover{background:rgba(255,255,255,.035);color:var(--ink)}
+:root[data-theme="dark"] .contact-panel,
+:root[data-theme="dark"] .practice-note{background:var(--paper2)}
+.header-tools{display:flex;align-items:center;gap:15px;flex-shrink:0}
+.language-switch,.theme-toggle{font:500 10px var(--sans);letter-spacing:.12em;color:var(--muted)}
+.theme-toggle{border:1px solid var(--line);background:transparent;border-radius:50%;width:30px;height:30px;cursor:pointer;color:var(--ink);font-size:15px}
+.theme-toggle:hover,.language-switch:hover{color:var(--rust)}
+.site-header{gap:20px}
+@media(max-width:760px){
+ .site-header{flex-wrap:wrap;align-items:center}
+ .header-tools{margin-left:auto}
+ nav{order:3;width:100%;max-width:none;justify-content:flex-start}
+}
