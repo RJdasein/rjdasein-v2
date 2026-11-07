@@ -1,53 +1,59 @@
 ---
 import '../styles/global.css';
-
-interface Props {
-  title?: string;
-  description?: string;
-}
-const {
-  title = 'Ruijie Wu — Embodied practice, psychotherapy & movement',
-  description = 'A space for embodied psychotherapy, dance movement, writing and ways of being.'
-} = Astro.props;
+interface Props { title?: string; description?: string; }
+const { title = 'Ruijie Wu — Embodied practice, psychotherapy & movement', description = 'A space for embodied psychotherapy, dance movement, writing and ways of being.' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname;
-const links = [
-  { href: base, label: 'Home' },
-  { href: `${base}about/`, label: 'About' },
-  { href: `${base}practice/`, label: 'Practice' },
-  { href: `${base}workshops/`, label: 'Workshops' },
-  { href: `${base}writing/`, label: 'Writing' },
-  { href: `${base}contact/`, label: 'Contact' }
-];
+const relative = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\\/+/, '');
+const isZh = relative === 'zh/' || relative.startsWith('zh/');
+const page = (isZh ? relative.replace(/^zh\\/?/, '') : relative).replace(/\\/$/, '');
+const pageKeys = ['', 'about', 'practice', 'workshops', 'writing', 'contact'];
+const labels = isZh ? ['首页', '关于', '专业实践', '工作坊', '写作', '联系'] : ['Home', 'About', 'Practice', 'Workshops', 'Writing', 'Contact'];
+const links = pageKeys.map((p, i) => ({ href: isZh ? `${base}zh/${p ? p + '/' : ''}` : `${base}${p ? p + '/' : ''}`, label: labels[i], key: p }));
+const languageHref = isZh ? `${base}${page ? page + '/' : ''}` : `${base}zh/${page ? page + '/' : ''}`;
 ---
 <!doctype html>
-<html lang="en">
+<html lang={isZh ? 'zh-CN' : 'en'} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f4f1eb" />
+    <meta name="theme-color" content="#f5f2ec" />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet" />
+    <script>
+      const root = document.documentElement;
+      const saved = localStorage.getItem('rjdasein-theme');
+      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.dataset.theme = saved || preferred;
+    </script>
   </head>
   <body>
     <header class="site-header">
       <a class="wordmark" href={base} aria-label="Ruijie Wu home">RJ<span>.</span></a>
       <nav aria-label="Main navigation">
-        {links.map((link) => (
-          <a href={link.href} class:list={{ active: path === link.href || (link.href !== '/' && path.startsWith(link.href)) }}>{link.label}</a>
-        ))}
+        {links.map((link) => <a href={link.href} class:list={{ active: page === link.key }}>{link.label}</a>)}
       </nav>
+      <div class="header-tools">
+        <a class="language-switch" href={languageHref}>{isZh ? 'EN' : '中'}</a>
+        <button class="theme-toggle" type="button" aria-label="Toggle dark mode" title={isZh ? '切换深色模式' : 'Toggle dark mode'}>◐</button>
+      </div>
     </header>
-    <main>
-      <slot />
-    </main>
+    <main><slot /></main>
     <footer class="site-footer">
       <a class="footer-mark" href={base}>Ruijie Wu<span>.</span></a>
-      <p>Attending to the body, making room for what is possible.</p>
+      <p>{isZh ? '倾听身体，为可能性留出空间。' : 'Attending to the body, making room for what is possible.'}</p>
       <span class="copyright">© {new Date().getFullYear()} · Made with care</span>
     </footer>
+    <script>
+      const toggle = document.querySelector('.theme-toggle');
+      toggle?.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('rjdasein-theme', next);
+      });
+    </script>
   </body>
 </html>
