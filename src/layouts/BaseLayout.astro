@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Ruijie Wu — Embodied practice, psychotherapy & movement',
+  description = 'A space for embodied psychotherapy, dance movement, writing and ways of being.'
+} = Astro.props;
+const path = Astro.url.pathname;
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/practice', label: 'Practice' },
+  { href: '/workshops', label: 'Workshops' },
+  { href: '/writing', label: 'Writing' },
+  { href: '/contact', label: 'Contact' }
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4f1eb" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Ruijie Wu home">RJ<span>.</span></a>
+      <nav aria-label="Main navigation">
+        {links.map((link) => (
+          <a href={link.href} class:list={{ active: path === link.href || (link.href !== '/' && path.startsWith(link.href)) }}>{link.label}</a>
+        ))}
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <a class="footer-mark" href="/">Ruijie Wu<span>.</span></a>
+      <p>Attending to the body, making room for what is possible.</p>
+      <span class="copyright">© {new Date().getFullYear()} · Made with care</span>
+    </footer>
+  </body>
+</html>
