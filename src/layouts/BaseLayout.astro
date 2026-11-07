@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname;
 const relative = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\\/+/, '');
 const isZh = relative === 'zh/' || relative.startsWith('zh/');
-const page = (isZh ? relative.replace(/^zh\\/?/, '') : relative).replace(/\\/$/, '');
+const pagePath = isZh ? relative.slice(3) : relative;\nconst page = pagePath.endsWith('/') ? pagePath.slice(0, -1) : pagePath;
 const pageKeys = ['', 'about', 'practice', 'workshops', 'writing', 'contact'];
 const labels = isZh ? ['首页', '关于', '专业实践', '工作坊', '写作', '联系'] : ['Home', 'About', 'Practice', 'Workshops', 'Writing', 'Contact'];
 const links = pageKeys.map((p, i) => ({ href: isZh ? `${base}zh/${p ? p + '/' : ''}` : `${base}${p ? p + '/' : ''}`, label: labels[i], key: p }));
