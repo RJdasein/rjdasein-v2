@@ -3,28 +3,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Practice — Ruijie Wu" description="Psychotherapy and embodied approaches with Ruijie Wu.">
   <section class="page-intro container">
-    <span class="eyebrow">Practice</span>
+    <span class="eyebrow">Practice / 02</span>
     <h1>Making room<br /><em>for experience.</em></h1>
     <p class="lede">Therapeutic work is not about becoming someone else. It can be a process of meeting more of who you are, with attention, honesty and care.</p>
   </section>
-  <section class="section">
-    <div class="container">
-      <div class="cards">
-        <article class="card"><span class="number">01</span><h3>Individual psychotherapy</h3><p>Exploring emotional difficulties, relationships, identity, grief, transitions and questions of meaning.</p></article>
-        <article class="card"><span class="number">02</span><h3>Embodied exploration</h3><p>Bringing attention to sensation, posture, gesture, movement and the felt dimensions of experience.</p></article>
-        <article class="card"><span class="number">03</span><h3>Trauma-informed work</h3><p>Working with sensitivity to safety, pacing, choice and the many ways people adapt to overwhelming experience.</p></article>
-      </div>
-    </div>
+  <section class="practice-list container">
+    <article><span class="number">01</span><div><h2>Individual psychotherapy</h2><p>Exploring emotional difficulties, relationships, identity, grief, transitions and questions of meaning.</p></div></article>
+    <article><span class="number">02</span><div><h2>Embodied exploration</h2><p>Bringing attention to sensation, posture, gesture, movement and the felt dimensions of experience.</p></div></article>
+    <article><span class="number">03</span><div><h2>Trauma-informed work</h2><p>Working with sensitivity to safety, pacing, choice and the many ways people adapt to overwhelming experience.</p></div></article>
   </section>
-  <section class="section">
-    <div class="narrow prose">
-      <h2>How I understand the work</h2>
-      <p>I am interested in a collaborative relationship in which your experience is taken seriously and does not need to fit a predetermined explanation. We may work with words, images, bodily awareness or movement, depending on your wishes and what feels appropriate.</p>
-      <p>My approach is shaped by existential-humanistic therapy, feminist perspectives, psychomotor practice and ongoing learning in dance movement therapy.</p>
-      <h3>Enquiries</h3>
-      <p>If you would like to ask about current availability, format or fees, please get in touch. We can clarify whether the work I offer is suitable for what you are looking for.</p>
-      <p><em>This website is not an emergency service. If you are in immediate danger or need urgent support, please contact local emergency or crisis services.</em></p>
-      <a class="text-link" href={`${import.meta.env.BASE_URL}contact/`}>Get in touch <span>↗</span></a>
+  <section class="practice-note">
+    <div class="container practice-note-grid">
+      <span class="eyebrow">How I understand the work</span>
+      <div class="prose">
+        <p>I am interested in a collaborative relationship in which your experience is taken seriously and does not need to fit a predetermined explanation. We may work with words, images, bodily awareness or movement, depending on your wishes and what feels appropriate.</p>
+        <p>My approach is shaped by existential-humanistic therapy, feminist perspectives, psychomotor practice and ongoing learning in dance movement therapy.</p>
+        <p>If you would like to ask about current availability, format or fees, please get in touch. We can clarify whether the work I offer is suitable for what you are looking for.</p>
+        <p><em>This website is not an emergency service. If you are in immediate danger or need urgent support, please contact local emergency or crisis services.</em></p>
+        <a class="text-link" href={`${import.meta.env.BASE_URL}contact/`}>Enquiries <span>↗</span></a>
+      </div>
     </div>
   </section>
 </BaseLayout>
