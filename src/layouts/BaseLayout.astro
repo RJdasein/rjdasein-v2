@@ -7,11 +7,11 @@ const path = Astro.url.pathname;
 const relative = path.startsWith(base) ? path.slice(base.length) : path;
 const isZh = relative === 'zh/' || relative.startsWith('zh/');
 const pagePath = isZh ? relative.slice(3) : relative;
-const page = pagePath.endsWith('/') ? pagePath.slice(0, -1) : pagePath;
+const currentPage = pagePath.endsWith('/') ? pagePath.slice(0, -1) : pagePath;
 const pageKeys = ['', 'about', 'practice', 'workshops', 'writing', 'contact'];
 const labels = isZh ? ['首页', '关于', '专业实践', '工作坊', '写作', '联系'] : ['Home', 'About', 'Practice', 'Workshops', 'Writing', 'Contact'];
 const links = pageKeys.map((p, i) => ({ href: isZh ? `${base}zh/${p ? p + '/' : ''}` : `${base}${p ? p + '/' : ''}`, label: labels[i], key: p }));
-const languageHref = isZh ? `${base}${page ? page + '/' : ''}` : `${base}zh/${page ? page + '/' : ''}`;
+const languageHref = isZh ? `${base}${currentPage ? currentPage + '/' : ''}` : `${base}zh/${currentPage ? currentPage + '/' : ''}`;
 ---
 <!doctype html>
 <html lang={isZh ? 'zh-CN' : 'en'} data-theme="light">
@@ -35,7 +35,7 @@ const languageHref = isZh ? `${base}${page ? page + '/' : ''}` : `${base}zh/${pa
     <header class="site-header">
       <a class="wordmark" href={base} aria-label="Ruijie Wu home">RJ<span>.</span></a>
       <nav aria-label="Main navigation">
-        {links.map((link) => <a href={link.href} class:list={{ active: page === link.key }}>{link.label}</a>)}
+        {links.map((link) => <a href={link.href} class:list={{ active: currentPage === link.key }}>{link.label}</a>)}
       </nav>
       <div class="header-tools">
         <a class="language-switch" href={languageHref}>{isZh ? 'EN' : '中'}</a>
