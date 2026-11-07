@@ -9,14 +9,15 @@ const {
   title = 'Ruijie Wu — Embodied practice, psychotherapy & movement',
   description = 'A space for embodied psychotherapy, dance movement, writing and ways of being.'
 } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname;
 const links = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/practice', label: 'Practice' },
-  { href: '/workshops', label: 'Workshops' },
-  { href: '/writing', label: 'Writing' },
-  { href: '/contact', label: 'Contact' }
+  { href: base, label: 'Home' },
+  { href: `${base}about/`, label: 'About' },
+  { href: `${base}practice/`, label: 'Practice' },
+  { href: `${base}workshops/`, label: 'Workshops' },
+  { href: `${base}writing/`, label: 'Writing' },
+  { href: `${base}contact/`, label: 'Contact' }
 ];
 ---
 <!doctype html>
@@ -33,7 +34,7 @@ const links = [
   </head>
   <body>
     <header class="site-header">
-      <a class="wordmark" href="/" aria-label="Ruijie Wu home">RJ<span>.</span></a>
+      <a class="wordmark" href={base} aria-label="Ruijie Wu home">RJ<span>.</span></a>
       <nav aria-label="Main navigation">
         {links.map((link) => (
           <a href={link.href} class:list={{ active: path === link.href || (link.href !== '/' && path.startsWith(link.href)) }}>{link.label}</a>
