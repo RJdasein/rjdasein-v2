@@ -93,3 +93,47 @@ h3{font-size:15px;font-weight:500}
  .site-footer{align-items:flex-start;flex-direction:column;gap:9px}
  .copyright{white-space:normal}
 }
+
+
+/* Editorial homepage composition */
+.hero-topline,.hero-bottomline{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.hero-index,.hero-bottomline{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero-grid{padding-top:30px;grid-template-columns:1.12fr .88fr;gap:4vw}
+.hero h1{font-size:clamp(64px,9.2vw,132px);line-height:.91;margin:25px 0 34px}
+.hero h1 em{color:var(--rust);font-weight:400}
+.full-stop{color:var(--rust)}
+.hero-photo{height:min(64vw,720px);min-height:510px}
+.hero-photo img{object-position:50% 50%}
+.hero-photo figcaption{display:flex;gap:10px;align-items:center}
+.hero-photo figcaption span{color:#e4bca5}
+.hero-bottomline{border-top:1px solid var(--line);margin-top:28px;padding-top:15px}
+.intro-band{background:#e9e4da;padding:clamp(65px,9vw,120px) 0}
+.intro-band-grid{display:grid;grid-template-columns:.55fr 1.8fr .65fr;gap:35px;align-items:start}
+.intro-band .statement{margin:0}
+.intro-signature{align-self:end;font-family:var(--serif);font-style:italic;color:var(--muted);font-size:13px}
+.ways-section{padding-top:115px;padding-bottom:115px;border-top:0}
+.ways-section .section-heading{align-items:end}
+.ways-section .section-heading h2 em{color:var(--rust);font-weight:400}
+.ways-section .card{position:relative;min-height:270px}
+.card-arrow{position:absolute;right:22px;bottom:24px;color:var(--rust);font-size:18px}
+.closing-note{background:#292a25;color:#f3f0e9;padding:clamp(75px,10vw,135px) 0}
+.closing-grid{display:grid;grid-template-columns:.6fr 1.4fr;gap:7vw}
+.closing-note .eyebrow{color:#c18a70}
+.closing-note .statement{max-width:850px}
+.closing-note .text-link{color:#d8a68d;border-color:#d8a68d}
+@media(max-width:760px){
+ .hero-topline{align-items:flex-start;flex-direction:column;gap:8px}
+ .hero-index{font-size:8px}
+ .hero-grid{padding-top:22px;gap:28px}
+ .hero h1{font-size:clamp(59px,14vw,88px);line-height:.94}
+ .hero-photo{height:118vw;min-height:0;max-height:620px}
+ .hero-bottomline{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:8px}
+ .hero-bottomline span:last-child{grid-column:1/-1}
+ .intro-band-grid,.closing-grid{grid-template-columns:1fr;gap:22px}
+ .intro-band .statement{font-size:clamp(31px,8vw,43px)}
+ .intro-signature{margin-top:4px}
+ .ways-section{padding-top:75px;padding-bottom:75px}
+ .ways-section .section-heading h2{font-size:46px}
+ .ways-section .card{min-height:0}
+ .card-arrow{bottom:26px}
+}
