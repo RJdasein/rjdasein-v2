@@ -207,3 +207,29 @@ h3{font-size:15px;font-weight:500}
  .header-tools{margin-left:auto}
  nav{order:3;width:100%;max-width:none;justify-content:flex-start}
 }
+
+
+/* Clickable practice pathways and their detail pages */
+.practice-paths{border-top:1px solid var(--line);margin-bottom:120px}
+.practice-path{display:grid;grid-template-columns:90px 1fr;gap:25px;padding:38px 0;border-bottom:1px solid var(--line);align-items:start;transition:padding .2s ease,background .2s ease}
+.practice-path:hover{padding-left:14px;background:rgba(149,99,78,.045);color:var(--ink)}
+.practice-path .number{font-family:var(--serif);font-size:19px;color:var(--rust)}
+.practice-path h2{font-size:clamp(28px,3.4vw,43px);margin:0 0 10px}
+.practice-path p{color:var(--muted);max-width:620px;font-size:14px;margin:0}
+.path-action{display:inline-block;margin-top:17px;color:var(--rust);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+.back-link{display:block;width:max-content;margin-bottom:35px;color:var(--rust);font-size:11px;letter-spacing:.08em}
+.back-link:hover{text-decoration:underline}
+.detail-body{display:grid;grid-template-columns:1.35fr .65fr;gap:8vw;padding:20px 0 120px;align-items:start}
+.detail-body .prose{max-width:700px}
+.detail-body .prose p{font-size:16px;line-height:2;margin-bottom:28px}
+.detail-aside{border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:13px}
+.detail-aside p{margin:18px 0}
+:root[data-theme="dark"] .practice-path:hover{background:rgba(255,255,255,.035);color:var(--ink)}
+@media(max-width:760px){
+ .practice-paths{margin-bottom:75px}
+ .practice-path{grid-template-columns:36px 1fr;gap:12px;padding:28px 0}
+ .practice-path h2{font-size:29px}
+ .detail-body{grid-template-columns:1fr;gap:35px;padding:5px 0 75px}
+ .detail-body .prose p{font-size:15px}
+ .back-link{margin-bottom:28px}
+}
