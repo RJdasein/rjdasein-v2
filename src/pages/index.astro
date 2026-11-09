@@ -45,6 +45,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
+  <section class="image-notes container">
+    <div class="image-notes-heading">
+      <span class="eyebrow">Fragments of attention</span>
+      <p>Small scenes, gestures and landscapes that invite us to pause.</p>
+    </div>
+    <div class="image-notes-grid">
+      <figure class="image-note image-note-wide">
+        <img src={`${import.meta.env.BASE_URL}images/sea-at-dusk.webp`} alt="The sea and a distant figure at dusk" loading="lazy" />
+        <figcaption>02 / At the edge of the day</figcaption>
+      </figure>
+      <figure class="image-note image-note-tall">
+        <img src={`${import.meta.env.BASE_URL}images/hero-sheer-sky.webp`} alt="A gesture reaching toward the open sky through translucent fabric" loading="lazy" />
+        <figcaption>03 / A gesture toward possibility</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <section class="closing-note">
     <div class="container closing-grid">
       <span class="eyebrow">An open-ended practice</span>
