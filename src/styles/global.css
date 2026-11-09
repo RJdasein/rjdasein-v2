@@ -378,24 +378,3 @@ h3{font-size:15px;font-weight:500}
   .intro-band .statement,.closing-note .statement{font-size:29px}
   .header-tools{gap:9px}
 }
-
-
-/* Mobile hero: restore a calm, single-column reading flow */
-@media(max-width:760px){
-  .hero-grid{grid-template-columns:minmax(0,1fr);gap:28px}
-  .hero-copy{max-width:36rem}
-  .hero-photo{
-    width:100%;
-    height:auto;
-    aspect-ratio:1.42 / 1;
-    min-height:0;
-    max-height:none;
-  }
-  .hero-photo img{object-position:50% 44%}
-  .hero-bottomline{grid-template-columns:1fr 1fr;row-gap:9px}
-  .hero-bottomline span:last-child{grid-column:auto}
-}
-@media(max-width:390px){
-  .hero-grid{gap:24px}
-  .hero-photo{aspect-ratio:1.32 / 1}
-}
