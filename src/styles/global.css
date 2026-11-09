@@ -272,3 +272,109 @@ h3{font-size:15px;font-weight:500}
  .image-note-wide{height:62vw;max-height:340px}
  .image-note-tall{height:105vw;max-height:470px;margin-top:0}
 }
+
+
+/* Mobile refinement — preserve the desktop composition */
+@media(max-width:760px){
+  body{font-size:15px;line-height:1.82}
+  .container{width:90vw}
+  .narrow{width:88vw}
+  .site-header{
+    padding:17px 5vw 14px;
+    gap:12px;
+  }
+  .wordmark{font-size:27px}
+  nav{
+    display:flex;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    gap:22px;
+    width:100%;
+    max-width:none;
+    padding:5px 0 3px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  nav::-webkit-scrollbar{display:none}
+  nav a{flex:0 0 auto;font-size:9px;letter-spacing:.12em}
+  .header-tools{gap:12px}
+  .language-switch{font-size:9px}
+  .theme-toggle{width:29px;height:29px}
+  .hero{padding:48px 0 62px}
+  .hero-topline{gap:7px}
+  .hero-topline .eyebrow{font-size:8px}
+  .hero-index{line-height:1.6}
+  .hero-grid{padding-top:27px;gap:30px}
+  .hero-copy{padding:0}
+  .hero h1{font-size:clamp(56px,13.5vw,76px);line-height:.98;margin:20px 0 23px}
+  .lede{font-size:16px;line-height:1.85}
+  .hero .lede{max-width:34em}
+  .text-link{margin-top:20px}
+  .hero-photo{height:112vw;max-height:560px}
+  .hero-photo figcaption{left:15px;bottom:13px;font-size:8px}
+  .hero-bottomline{margin-top:22px;padding-top:13px;line-height:1.6}
+  .intro-band{padding:66px 0 72px}
+  .intro-band-grid{gap:19px}
+  .intro-band .statement{font-size:clamp(30px,7.8vw,40px);line-height:1.38}
+  .intro-signature{font-size:12px}
+  .ways-section{padding-top:68px;padding-bottom:68px}
+  .ways-section .section-heading{margin-bottom:28px}
+  .ways-section .section-heading h2{font-size:clamp(39px,10vw,46px);line-height:1.1}
+  .section-heading p{font-size:12px;line-height:1.8}
+  .ways-section .card{padding:23px 3px 25px}
+  .ways-section .card h3{font-size:24px;margin:13px 0 7px}
+  .ways-section .card p{font-size:13px;line-height:1.8;max-width:31em}
+  .card-arrow{right:5px;bottom:23px}
+  .image-notes{padding:6px 0 68px}
+  .image-notes-heading{padding-bottom:17px}
+  .image-notes-heading p{font-size:12px;line-height:1.7;max-width:28em}
+  .image-notes-grid{gap:24px;padding-top:20px}
+  .image-note-wide{height:64vw;max-height:330px}
+  .image-note-tall{height:105vw;max-height:460px}
+  .image-note figcaption{padding:11px 12px;font-size:8px}
+  .closing-note{padding:68px 0 76px}
+  .closing-grid{gap:20px}
+  .closing-note .statement{font-size:clamp(30px,7.8vw,40px);line-height:1.38}
+  .site-footer{padding:30px 5vw 34px;gap:8px}
+  .site-footer p{font-size:11px;line-height:1.7}
+  .copyright{font-size:9px}
+  .page-intro{padding:68px 0 48px}
+  .page-intro h1{font-size:clamp(49px,11.5vw,70px);line-height:1.02;margin:20px 0 22px}
+  .page-intro .lede{font-size:15px;line-height:1.85}
+  .about-opening{padding:12px 0 64px;gap:18px}
+  .about-side-note{font-size:16px}
+  .about-opening .prose p{font-size:15px;line-height:1.9;margin-bottom:19px}
+  .practice-list,.practice-paths{margin-bottom:65px}
+  .practice-list article,.practice-path{padding:24px 0;gap:11px}
+  .practice-list h2,.practice-path h2{font-size:26px;line-height:1.2}
+  .practice-list p,.practice-path p{font-size:13px;line-height:1.8}
+  .practice-note{padding:60px 0}
+  .practice-note-grid{gap:18px}
+  .workshop-intro{padding:5px 0 65px;gap:20px}
+  .workshop-quiet-mark{font-size:47px}
+  .workshop-intro .prose p{font-size:15px;line-height:1.9}
+  .workshop-topics{gap:0 15px}
+  .workshop-topics span{font-size:16px;padding:15px 5px 15px 0}
+  .writing-list article{padding:23px 0}
+  .writing-list h2{font-size:23px;line-height:1.3}
+  .writing-list p{font-size:12px;line-height:1.75}
+  .detail-body{padding:0 0 65px;gap:27px}
+  .detail-body .prose p{font-size:15px;line-height:1.9;margin-bottom:21px}
+  .detail-aside{font-size:12px}
+  .social-presence{margin:62px 0 70px;padding-top:30px}
+  .social-heading h2{font-size:31px}
+  .social-heading p{font-size:12px;line-height:1.8}
+  .social-links{margin-top:25px}
+  .social-links a{padding:17px 0}
+  .social-links strong{font-size:20px}
+  .wechat-card{margin-top:20px;padding:12px 0}
+  .contact-panel{margin:10px 0 65px;padding:35px 7vw}
+}
+@media(max-width:390px){
+  .hero h1{font-size:55px}
+  .hero-bottomline{font-size:7px;letter-spacing:.08em}
+  .intro-band .statement,.closing-note .statement{font-size:29px}
+  .header-tools{gap:9px}
+}
