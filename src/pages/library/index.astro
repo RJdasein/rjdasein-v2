@@ -1,0 +1,408 @@
+---
+import LibraryLayout from '../../layouts/LibraryLayout.astro';
+---
+<LibraryLayout>
+  <section class="library-hero">
+    <div>
+      <span class="eyebrow">A personal research space</span>
+      <h1>Private <em>Library.</em></h1>
+      <p>把文献、阅读过程与逐渐形成的思想联系在一起。</p>
+    </div>
+    <span class="library-mark">A place for thinking slowly.</span>
+  </section>
+
+  <section id="auth-panel" class="auth-panel">
+    <span class="eyebrow">Private access</span>
+    <h2>进入你的文献库</h2>
+    <p>输入邮箱，我们会向你发送安全登录链接。文献和笔记仅对所属账户开放。</p>
+    <label class="form-label" for="auth-email">Email address</label>
+    <input id="auth-email" class="field" type="email" autocomplete="email" placeholder="name@example.com" required />
+    <button id="send-link" class="primary-button" type="button">发送登录链接</button>
+    <div id="auth-message" class="status-message" role="status" aria-live="polite"></div>
+  </section>
+
+  <section id="library-app" class="library-app hidden">
+    <div class="dashboard-top">
+      <div><span class="eyebrow">Your collection</span><div class="welcome">已登录：<strong id="user-email"></strong></div></div>
+      <div class="dashboard-actions">
+        <span class="welcome">你的阅读空间</span>
+        <button id="sign-out" class="quiet-button" type="button">退出登录</button>
+      </div>
+    </div>
+
+    <div class="stats" aria-label="文献统计">
+      <div class="stat"><strong id="count-all">0</strong><span>全部文献</span></div>
+      <div class="stat"><strong id="count-to-read">0</strong><span>待读</span></div>
+      <div class="stat"><strong id="count-reading">0</strong><span>在读</span></div>
+      <div class="stat"><strong id="count-read">0</strong><span>已读</span></div>
+    </div>
+
+    <div class="upload-box">
+      <div>
+        <strong>将一份新资料加入文献库</strong>
+        <span>支持 PDF / DOCX，单个文件最大 50 MB。上传后默认标记为“待读”。</span>
+      </div>
+      <div class="upload-actions">
+        <input id="file-input" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+        <button id="upload-button" class="secondary-button" type="button">上传资料</button>
+      </div>
+    </div>
+
+    <div class="library-tools">
+      <div class="search-wrap">
+        <input id="search-input" class="field" type="search" placeholder="搜索标题、作者或 DOI…" />
+      </div>
+      <div class="filters" role="group" aria-label="阅读状态筛选">
+        <button class="filter-button active" data-filter="all" type="button">全部</button>
+        <button class="filter-button" data-filter="to_read" type="button">待读</button>
+        <button class="filter-button" data-filter="reading" type="button">在读</button>
+        <button class="filter-button" data-filter="read" type="button">已读</button>
+        <button class="filter-button" data-filter="reference" type="button">参考</button>
+      </div>
+    </div>
+
+    <div id="library-message" class="status-message" role="status" aria-live="polite"></div>
+    <div id="document-list" class="document-list"></div>
+  </section>
+</LibraryLayout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = 'https://esaretcwukolkvlckxku.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Ux_VvkmziyS4n9-RdHOOnQ_KFsk';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  const authPanel = document.querySelector('#auth-panel');
+  const appPanel = document.querySelector('#library-app');
+  const emailInput = document.querySelector('#auth-email');
+  const authMessage = document.querySelector('#auth-message');
+  const libraryMessage = document.querySelector('#library-message');
+  const searchInput = document.querySelector('#search-input');
+  const fileInput = document.querySelector('#file-input');
+  const docList = document.querySelector('#document-list');
+
+  const labels = { to_read: '待读', reading: '在读', read: '已读', reference: '参考' };
+  let currentUser = null;
+  let documents = [];
+  let filesByDocument = new Map();
+  let activeFilter = 'all';
+  let expandedNotes = new Set();
+
+  function setMessage(el, message, error = false) {
+    el.textContent = message || '';
+    el.style.color = error ? '#a33f32' : '';
+  }
+
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined && text !== null) node.textContent = String(text);
+    return node;
+  }
+
+  function showAuthenticated(user) {
+    currentUser = user;
+    authPanel.classList.add('hidden');
+    appPanel.classList.remove('hidden');
+    document.querySelector('#user-email').textContent = user.email || '已登录账户';
+    loadLibrary();
+  }
+
+  function showSignedOut() {
+    currentUser = null;
+    documents = [];
+    filesByDocument = new Map();
+    appPanel.classList.add('hidden');
+    authPanel.classList.remove('hidden');
+  }
+
+  async function sendLoginLink() {
+    const email = emailInput.value.trim();
+    if (!email) return setMessage(authMessage, '请先输入邮箱地址。', true);
+    const button = document.querySelector('#send-link');
+    button.disabled = true;
+    button.textContent = '正在发送…';
+    setMessage(authMessage, '');
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin + '/library/' }
+    });
+    button.disabled = false;
+    button.textContent = '发送登录链接';
+    if (error) return setMessage(authMessage, error.message, true);
+    setMessage(authMessage, '登录链接已发送，请检查邮箱。首次登录也会创建你的账户。');
+  }
+
+  async function loadLibrary() {
+    setMessage(libraryMessage, '正在读取文献库…');
+    const { data, error } = await supabase
+      .from('documents')
+      .select('id,title,title_original,authors,publication_year,language,doi,reading_status,source_kind,created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      setMessage(libraryMessage, '读取失败：' + error.message, true);
+      return;
+    }
+    documents = data || [];
+    const ids = documents.map((doc) => doc.id);
+    filesByDocument = new Map();
+    if (ids.length) {
+      const { data: files, error: fileError } = await supabase
+        .from('document_files')
+        .select('id,document_id,file_name,storage_bucket,storage_path,language,is_primary')
+        .in('document_id', ids);
+      if (fileError) {
+        setMessage(libraryMessage, '文献已读取，但文件清单读取失败：' + fileError.message, true);
+      } else {
+        for (const file of files || []) {
+          const list = filesByDocument.get(file.document_id) || [];
+          list.push(file);
+          filesByDocument.set(file.document_id, list);
+        }
+      }
+    }
+    setMessage(libraryMessage, '');
+    updateStats();
+    renderDocuments();
+  }
+
+  function updateStats() {
+    const count = (status) => documents.filter((doc) => doc.reading_status === status).length;
+    document.querySelector('#count-all').textContent = documents.length;
+    document.querySelector('#count-to-read').textContent = count('to_read');
+    document.querySelector('#count-reading').textContent = count('reading');
+    document.querySelector('#count-read').textContent = count('read');
+  }
+
+  function renderDocuments() {
+    const query = searchInput.value.trim().toLowerCase();
+    const rows = documents.filter((doc) => {
+      const matchesStatus = activeFilter === 'all' || doc.reading_status === activeFilter;
+      const searchable = [
+        doc.title, doc.title_original, doc.doi, doc.language,
+        ...(doc.authors || [])
+      ].filter(Boolean).join(' ').toLowerCase();
+      return matchesStatus && (!query || searchable.includes(query));
+    });
+    docList.replaceChildren();
+    if (!rows.length) {
+      const empty = element('div', 'empty-state',
+        documents.length ? '没有找到符合条件的文献。' : '这里还空着。上传第一份资料，开始建立你的个人知识档案。');
+      docList.append(empty);
+      return;
+    }
+    for (const doc of rows) docList.append(renderDocument(doc));
+  }
+
+  function renderDocument(doc) {
+    const card = element('article', 'document-card');
+    const row = element('div', 'document-row');
+    const main = element('div');
+    const title = element('h3', 'doc-title', doc.title);
+    main.append(title);
+    if (doc.title_original && doc.title_original !== doc.title) {
+      main.append(element('p', 'doc-original', doc.title_original));
+    }
+    const metaParts = [];
+    if (doc.authors?.length) metaParts.push(doc.authors.join(', '));
+    if (doc.publication_year) metaParts.push(String(doc.publication_year));
+    if (doc.language) metaParts.push(doc.language);
+    if (doc.doi) metaParts.push('DOI: ' + doc.doi);
+    main.append(element('p', 'doc-meta', metaParts.join(' · ') || '书目信息待补充'));
+
+    const controls = element('div', 'doc-controls');
+    const select = element('select', 'status-select');
+    select.setAttribute('aria-label', '阅读状态');
+    for (const [value, label] of Object.entries(labels)) {
+      const option = element('option', '', label);
+      option.value = value;
+      if (doc.reading_status === value) option.selected = true;
+      select.append(option);
+    }
+    select.addEventListener('change', () => updateStatus(doc.id, select.value, select));
+    controls.append(select);
+    row.append(main, controls);
+    card.append(row);
+
+    const actions = element('div', 'doc-actions');
+    const fileList = filesByDocument.get(doc.id) || [];
+    if (fileList.length) {
+      for (const file of fileList) {
+        const open = element('button', 'quiet-button', '打开 ' + file.file_name);
+        open.type = 'button';
+        open.addEventListener('click', () => openFile(file));
+        actions.append(open);
+      }
+    } else {
+      actions.append(element('span', 'doc-meta', '尚未上传原文件'));
+    }
+    const notesButton = element('button', 'quiet-button', expandedNotes.has(doc.id) ? '收起笔记' : '阅读笔记');
+    notesButton.type = 'button';
+    notesButton.addEventListener('click', () => toggleNotes(doc.id, card));
+    actions.append(notesButton);
+    card.append(actions);
+
+    if (expandedNotes.has(doc.id)) {
+      const panel = element('div', 'notes-panel');
+      panel.append(element('h4', '', '阅读笔记'));
+      panel.append(element('div', 'notes-list', '正在读取笔记…'));
+      const form = element('form', 'note-form');
+      const input = element('textarea', 'field');
+      input.placeholder = '记录一个想法、问题或与你的研究相关的联系…';
+      input.required = true;
+      const save = element('button', 'secondary-button', '保存笔记');
+      save.type = 'submit';
+      form.append(input, save);
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        saveNote(doc.id, input, save, panel.querySelector('.notes-list'));
+      });
+      panel.append(form);
+      card.append(panel);
+      loadNotes(doc.id, panel.querySelector('.notes-list'));
+    }
+    return card;
+  }
+
+  async function updateStatus(id, status, select) {
+    select.disabled = true;
+    const { error } = await supabase.from('documents').update({ reading_status: status }).eq('id', id);
+    select.disabled = false;
+    if (error) {
+      setMessage(libraryMessage, '状态更新失败：' + error.message, true);
+      return;
+    }
+    const doc = documents.find((item) => item.id === id);
+    if (doc) doc.reading_status = status;
+    updateStats();
+    renderDocuments();
+  }
+
+  async function openFile(file) {
+    const { data, error } = await supabase.storage
+      .from(file.storage_bucket)
+      .createSignedUrl(file.storage_path, 60);
+    if (error) return setMessage(libraryMessage, '文件打开失败：' + error.message, true);
+    window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  async function toggleNotes(id) {
+    if (expandedNotes.has(id)) expandedNotes.delete(id);
+    else expandedNotes.add(id);
+    renderDocuments();
+  }
+
+  async function loadNotes(id, target) {
+    const { data, error } = await supabase.from('reading_notes')
+      .select('id,note_type,title,content,page_number,created_at')
+      .eq('document_id', id)
+      .order('created_at', { ascending: false });
+    target.replaceChildren();
+    if (error) {
+      target.textContent = '笔记读取失败：' + error.message;
+      return;
+    }
+    if (!data?.length) {
+      target.append(element('p', 'doc-meta', '还没有笔记。'));
+      return;
+    }
+    for (const note of data) {
+      const entry = element('div', 'note-entry');
+      entry.textContent = (note.page_number ? 'p. ' + note.page_number + ' · ' : '') + note.content;
+      target.append(entry);
+    }
+  }
+
+  async function saveNote(id, input, button, target) {
+    const content = input.value.trim();
+    if (!content) return;
+    button.disabled = true;
+    const { error } = await supabase.from('reading_notes').insert({
+      document_id: id,
+      note_type: 'reflection',
+      content
+    });
+    button.disabled = false;
+    if (error) return setMessage(libraryMessage, '笔记保存失败：' + error.message, true);
+    input.value = '';
+    loadNotes(id, target);
+  }
+
+  async function uploadFile() {
+    const file = fileInput.files?.[0];
+    if (!file) return setMessage(libraryMessage, '请先选择一个 PDF 或 DOCX 文件。', true);
+    if (file.size > 50 * 1024 * 1024) return setMessage(libraryMessage, '文件超过 50 MB 限制。', true);
+    const button = document.querySelector('#upload-button');
+    button.disabled = true;
+    button.textContent = '正在上传…';
+    setMessage(libraryMessage, '正在创建文献记录并上传文件…');
+    const title = file.name.replace(/\.[^.]+$/, '');
+    const { data: doc, error: docError } = await supabase.from('documents')
+      .insert({ title, reading_status: 'to_read', source_kind: 'other' })
+      .select('id')
+      .single();
+    if (docError) {
+      button.disabled = false;
+      button.textContent = '上传资料';
+      return setMessage(libraryMessage, '文献记录创建失败：' + docError.message, true);
+    }
+    const safeName = file.name.replace(/[\\/]+/g, '-');
+    const storagePath = currentUser.id + '/' + doc.id + '/' + safeName;
+    const { error: uploadError } = await supabase.storage.from('academic-library')
+      .upload(storagePath, file, { contentType: file.type || 'application/octet-stream', upsert: false });
+    if (uploadError) {
+      await supabase.from('documents').delete().eq('id', doc.id);
+      button.disabled = false;
+      button.textContent = '上传资料';
+      return setMessage(libraryMessage, '文件上传失败：' + uploadError.message, true);
+    }
+    const { error: fileError } = await supabase.from('document_files').insert({
+      document_id: doc.id,
+      file_name: file.name,
+      storage_bucket: 'academic-library',
+      storage_path: storagePath,
+      mime_type: file.type || null,
+      file_size_bytes: file.size,
+      is_primary: true
+    });
+    if (fileError) {
+      await supabase.storage.from('academic-library').remove([storagePath]);
+      await supabase.from('documents').delete().eq('id', doc.id);
+      button.disabled = false;
+      button.textContent = '上传资料';
+      return setMessage(libraryMessage, '文件已上传，但文件记录保存失败：' + fileError.message, true);
+    }
+    fileInput.value = '';
+    button.disabled = false;
+    button.textContent = '上传资料';
+    await loadLibrary();
+    setMessage(libraryMessage, '已加入文献库。书目信息可以之后补充。');
+  }
+
+  document.querySelector('#send-link').addEventListener('click', sendLoginLink);
+  emailInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') sendLoginLink(); });
+  document.querySelector('#sign-out').addEventListener('click', async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) return setMessage(libraryMessage, error.message, true);
+    showSignedOut();
+  });
+  document.querySelector('#upload-button').addEventListener('click', uploadFile);
+  searchInput.addEventListener('input', renderDocuments);
+  document.querySelectorAll('.filter-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      activeFilter = button.dataset.filter;
+      document.querySelectorAll('.filter-button').forEach((item) => item.classList.toggle('active', item === button));
+      renderDocuments();
+    });
+  });
+
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (sessionData.session?.user) showAuthenticated(sessionData.session.user);
+  else showSignedOut();
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) showAuthenticated(session.user);
+    else showSignedOut();
+  });
+</script>
